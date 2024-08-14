@@ -1,0 +1,68 @@
+;============================================== 
+; Filename    : DPU_Log Collection.ttl 
+; Description : DPU Log Collection 
+; Author      : Vasanth
+; Created     : 2024/02/23 r3
+; modified    : 2024/04/26 r3.2
+;               2024/04/29 r4
+;============================================== 
+
+
+connect '192.168.0.10 /ssh /2 /auth=password /user=user /passwd=Erp2Dpu_12345!'
+
+wait 'user@InterfaceLinux:~$'
+
+pause 1
+sendln 'sudo su'
+pause 1
+sendln 'Erp2Dpu_12345!'
+pause 1
+sendln 'mkdir /media/DATA/LogOutput/MEV3_log_20240509'
+pause 1
+sendln 'cd /media/DATA/LogOutput/'
+pause 1
+sendln 'tar -czvf 20240509_audit.tar.gz 20240509'
+pause 5
+sendln 'mv 20240509_audit.tar.gz MEV3_log_20240509'
+pause 2
+sendln 'cd /media/DATA/LogOutput/ASN1'
+pause 1
+sendln 'tar -czvf 20240509_ASN1.tar.gz 20240509'
+pause 20
+sendln 'mv 20240509_ASN1.tar.gz /media/DATA/LogOutput/MEV3_log_20240509/'
+pause 1
+sendln 'cd ..'
+pause 1
+sendln 'cd /media/DATA/LogOutput/debug'
+pause 1
+sendln 'tar -czvf 20240509_debug.tar.gz 20240509*'
+pause 15
+sendln 'mv 20240509_debug.tar.gz /media/DATA/LogOutput/MEV3_log_20240509/'
+pause 5
+sendln 'cd ..'
+pause 1
+sendln 'ls -l'
+
+MESSAGE = 'Please Select the following OBU command options.'#13#13 
+ strconcat MESSAGE ' 1  Remove all Archived Log'#13 
+ strconcat MESSAGE ' 2  Close Macro'#13
+
+ 
+  inputbox MESSAGE 'List for Command Option'
+ 
+ str2int OPTIONNUMB inputstr
+ if OPTIONNUMB = 1 then 
+    sendln 'rm -r MEV* '
+	pause 1
+    sendln 'ls -l'
+
+ elseif OPTIONNUMB = 2 then
+    messagebox 'End.' 'end'
+
+ else 
+    messagebox 'The unjust number was input.' 'Input error' 
+    end 
+ endif
+
+;; End of Macro
+end
